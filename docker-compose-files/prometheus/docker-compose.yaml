@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   prometheus:
@@ -13,3 +13,7 @@ services:
     user: "1000:1000"
     command:
       - "--config.file=/etc/prometheus/prometheus.yaml"
+networks:
+  default:
+    name: traefik-proxy_default
+    external: true
