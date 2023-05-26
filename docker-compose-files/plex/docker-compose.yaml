@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   plex:
@@ -10,7 +10,7 @@ services:
     environment:
       - TZ=Europe/Stockholm
       - PLEX_CLAIM=<claim_token - plex.tv/claim>
-      - ADVERTISE_IP=<e.g https://plex.example.io:443
+      - ADVERTISE_IP=<e.g https://plex.homepot.io:443
     volumes:
       - /mnt/Storage1/plex/config:/config
       - /mnt/Storage1/plex/transcode:/transcode
