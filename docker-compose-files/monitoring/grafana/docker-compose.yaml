@@ -19,3 +19,4 @@ services:
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
       - "traefik.http.routers.grafana.tls=true"
       - "traefik.http.routers.grafana.tls.certresolver=production"
+      - "traefik.docker.network=traefik-proxy"

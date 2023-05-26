@@ -1,0 +1,61 @@
+version: "3"
+
+#Stack file for Prometheus, Grafana and Node Exporter
+
+volumes:
+  grafana-data:
+    driver: local
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - /etc/prometheus:/etc/prometheus
+      - /mnt/Storage1/prometheus:/prometheus
+    restart: unless-stopped
+    user: "1001:1003"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+    networks:
+      - monitoring
+      - traefik
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - monitoring
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.entrypoints=web, websecure"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.homepot.io`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=production"
+      - "traefik.docker.network=traefik-proxy"
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    container_name: node_exporter
+    command: "--path.rootfs=/host"
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro,rslave
+    networks:
+      - monitoring
+networks:
+  traefik:
+    name: traefik-proxy
+    external: true
+  monitoring:
+    name: monitoring-internal
