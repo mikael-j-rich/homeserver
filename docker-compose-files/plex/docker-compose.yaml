@@ -9,8 +9,10 @@ services:
       - 32400:32400/tcp
     environment:
       - TZ=Europe/Stockholm
-      - PLEX_CLAIM=<claim_token - plex.tv/claim>
+      - PLEX_CLAIM=exampletoken3217839821737931873
       - ADVERTISE_IP=<e.g https://plex.homepot.io:443
+      - PLEX_UID=1002
+      - PLEX_GID=1004
     volumes:
       - /mnt/Storage1/plex/config:/config
       - /mnt/Storage1/plex/transcode:/transcode
