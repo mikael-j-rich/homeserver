@@ -15,5 +15,5 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yaml"
 networks:
   default:
-    name: traefik-proxy_default
+    name: traefik-proxy
     external: true
