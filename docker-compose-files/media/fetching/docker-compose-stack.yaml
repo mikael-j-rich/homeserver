@@ -1,0 +1,68 @@
+version: "3.8"
+
+#Stack file for Media library fetching, Torrenting and stuff
+
+services:
+  qbittorrent:
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:latest
+    restart: unless-stopped
+    ports:
+      - 8090:8090
+      - 6881:6881
+      - 6881:6881/udp
+    environment:
+      - PUID=1003
+      - PGID=1005
+      - TZ=Europe/Stockholm
+      - WEBUI_PORT=8090
+    volumes:
+      - /etc/qbt:/config
+      - /mnt/Storage1/MediaLibrary/shared/torrents:/downloads
+    networks:
+      - internal
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1004
+      - PGID=1005
+      - TZ=Europe/Stockholm
+    volumes:
+      - /etc/radarr:/config
+      - /mnt/Storage1/MediaLibrary/shared:/data
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    networks:
+      - traefik
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.entrypoints=web, websecure"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.homepot.io`)"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+      - "traefik.http.routers.radarr.tls=true"
+      - "traefik.http.routers.radarr.tls.certresolver=production"
+      - "traefik.docker.network=traefik-proxy"
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1004
+      - PGID=1005
+      - TZ=Europe/Stockholm
+    volumes:
+      - /etc/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    networks:
+      - internal
+
+networks:
+  traefik:
+    name: traefik-proxy
+    external: true
+  internal:
+    name: media-library-internal

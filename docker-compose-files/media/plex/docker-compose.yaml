@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   plex:
@@ -14,9 +14,9 @@ services:
       - PLEX_UID=1002
       - PLEX_GID=1004
     volumes:
-      - /mnt/Storage1/plex/config:/config
-      - /mnt/Storage1/plex/transcode:/transcode
-      - /mnt/Storage1/plex/media:/media
+      - /mnt/Storage1/MediaLibrary/Plex/config:/config
+      - /mnt/Storage1/MediaLibrary/Plex/transcode:/transcode
+      - /mnt/Storage1/MediaLibrary/shared/media:/media
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex.entrypoints=web, websecure"
